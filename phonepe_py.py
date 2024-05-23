@@ -17,56 +17,43 @@ from scripts.data.top_data import *
 #streamlit UI
 
 def detail_col_1():
-    space1,trans_col,year_col,q_col,space2 = st.columns([1,10,7,10,1])
+    state_map = gpd.read_file("geo_map/indian_states.geojson")
+    states = state_map["ST_NM"].to_list()
+    states.insert(0,"All-India")
+    
+    space1,trans_col,year_col,q_col, allindia_col,recenter_col, space2 = st.columns([1,9,6,10,12,9,1])
 
     with trans_col:
-        data_option = st.selectbox(label = "" ,options= ["Transaction", "User", "Insurance"], index=0)
+        data_option = st.selectbox(label = "" ,options= ["Transaction", "User", "Insurance"], index=0, label_visibility="collapsed")
     with year_col:
         year_option = [2018,2019,2020,2021,2022,2023]
         if data_option == "Insurance":
             year_option = [2020,2021,2022,2023]
         
-        year = st.selectbox(label = "" ,options= year_option, index=year_option.index(2023))
+        year = st.selectbox(label = "" ,options= year_option, index=year_option.index(2023), label_visibility="collapsed")
     with q_col:
         quater_options = ["Q1(Jan - Mar)","Q2(Apr - Jun)", "Q3(Jul - Sep)", "Q4(Oct - Dec)"]
         if (data_option == "Insurance") & (year == 2020):
             quater_options = ["Q2(Apr - Jun)", "Q3(Jul - Sep)", "Q4(Oct - Dec)"]
-        quater = st.selectbox(label="", options =quater_options,index=quater_options.index("Q4(Oct - Dec)"))
+        quater = st.selectbox(label="", options =quater_options,index=quater_options.index("Q4(Oct - Dec)"), label_visibility="collapsed")
 
-    return data_option, year, quater
-
-
-def detail_col_2():
-    state_map = gpd.read_file("geo_map/indian_states.geojson")
-    space1 ,recenter_col, india_bcol, allindia_col, space3 = st.columns([1,7,5,15,1])
-    states = state_map["ST_NM"].to_list()
-    states.insert(0,"All-India")
     with recenter_col:
         with stylable_container(key="Recenterbutton",
-                                css_styles="""button {background-color:#121326}"""):
-            st.write("Test")
+                                css_styles="""button {background-color:#87d0ab}"""):
             recenter_button = st.button("Recenter Map")
-    
-    with india_bcol:
-        with stylable_container(key="indiabutton",
-                                    css_styles="""button {background-color:#121326}"""):
-                st.write("")
-                india_button = st.button("All-India")
 
-        if india_button:
-            st.session_state.load_map = states[0]
-    
     with allindia_col:
-        load_map = st.selectbox(label= "Select the State", options=states,index=states.index("All-India"), key="load_map")
+        load_map = st.selectbox(label= "", options=states,index=states.index("All-India"), key="load_map", label_visibility="collapsed")
 
-    return recenter_button, load_map
+    
+    return data_option, year, quater, recenter_button, load_map
+
 
 
 def detail_col_3(load_map, data_option):
     if load_map == "All-India":
-        space1,d_title, state_b, district_b, pincode_b,space2 = st.columns([1,15,5,5,5,1], gap="small")
-        with d_title:
-            st.markdown(f"<h2 style='color:#b069ff	;'>{data_option}</h2>", unsafe_allow_html=True)
+        state_b, district_b, pincode_b = st.columns([5,5,5])
+        
         with state_b:
             with stylable_container(key="statebutton",
                                     css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
@@ -80,9 +67,8 @@ def detail_col_3(load_map, data_option):
                                     css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
                 pincode_button = st.button("Pincode")
     else:
-        space1,d_title, district_b, pincode_b,space2 = st.columns([1,15,5,5,1], gap="small")
-        with d_title:
-            st.markdown(f"<h2 style='color:#b069ff	;'>{data_option}</h2>", unsafe_allow_html=True)
+        district_b, pincode_b = st.columns([5,5], gap="small")
+        
         with district_b:
             with stylable_container(key="districtbutton",
                                     css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
@@ -295,13 +281,7 @@ def load_data_exploration_page():
             if year:
                 if st.button("Show Graph", key= "show_graph_3", type= "primary"):
                     with st.container(border = True):
-                        #fig = px.bar(map_user_list, x = "districts", y = "registeredUsers", title = f"{year} DISTRICT REGISTERED USER COUNT", color_discrete_sequence = px.colors.sequential.Bluered_r)
-                        #fig = px.sunburst(map_user_list, path=['states', 'districts', 'registeredUsers'], values='appOpens')
-                        #fig = px.bar(map_user_list, x="states", y="registeredUsers", color="districts", title="Long-Form Input")
-                        #st.plotly_chart(fig, use_container_width=True)
-
-                        #show_test_chart()
-
+                        
                         fig = px.sunburst(map_user_list, path=['states', 'districts'], values='registeredUsers')
                         st.plotly_chart(fig, use_container_width=True)
                     
@@ -351,86 +331,73 @@ def load_data_exploration_page():
 
 ## UI for data visualization
 def load_data_visualization_page():
-        map_column, details_colmun = st.columns([7,4])
+        
+        with stylable_container(key="option_container", css_styles="""
+                                {background-color: #034424;}"""):
+            st.write("")
 
-        with details_colmun:
-            with stylable_container(key ="info_container", css_styles="""
-                                {background-color: #3A3C5E;}"""):
-               
-                data_option, year, quater = detail_col_1()
-                recenter_button, load_map = detail_col_2()
-                
-                st.markdown("----", unsafe_allow_html=True)
-                
-                top_data = detail_col_3(load_map, data_option)
-               
-                info_dict =  {"data_option":data_option,"year":year, "quater":quater, "state": load_map, "top_data": top_data}
-                
-                space1, detial_info, top_10 = st.columns([1,20,20])
+            data_option, year, quater, recenter_button,load_map  = detail_col_1()
+            
+            st.write("")
 
-                with detial_info:
-                    detail_info_col(info_dict)
-
-                with top_10:
-                    st.markdown(f"<h3>Top 10 {top_data}</h3>", unsafe_allow_html=True)
-                    top_10_result = top10_data(info_dict)
-                    top_10_result["name"] = top_10_result["name"].str.title()
-                    top_10_result = top_10_result.style.apply(lambda x: ['color: #b069ff' if isinstance(v, int) else '' for v in x], axis=1)
-                    st.markdown(top_10_result.hide(axis = 0).hide(axis = 1).to_html(), unsafe_allow_html = True)
-                    st.write("")
-                    st.write("")
-                    st.write("")
+            # draw map
+            info_dict =  {"data_option":data_option,"year":year, "quater":quater, "state": load_map, "top_data": "State"}
+                
                     
             initial_view_state = viewstate(load_map)
 
-            layer = list(create_layers(info_dict))
-            if data_option == "Transaction":
-                r = pdk.Deck(
-                initial_view_state=initial_view_state,
-                layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>All Transactions</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Count}</b> 
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Total Payment Value</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Amount}</b> 
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Avg. Transactions Value</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Avg}</b>""", 
-                                                            "style": {"color": "white", "backgroundColor": "#121326"}})
-                
-            elif data_option =="User":
-                r = pdk.Deck(
-                initial_view_state=initial_view_state,
-                layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Registered Users</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{registeredUsers}</b> 
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>App Opens</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{appOpens}</b> """, 
-                                                            "style": {"color": "white", "backgroundColor": "#121326"}})
-            else:
-                r = pdk.Deck(
-                initial_view_state=initial_view_state,
-                layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Insurance Policies(Nos.)</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Count}</b> 
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Total Premium Value</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Amount}</b> 
-                                                        <p style= 'margin: 0; line-height: 1; color:white;'>Avg. Premium Value</p>
-                                                        <b style='color:#b069ff; margin: 0;line-height: 3;'>{Avg}</b>""", 
-                                                            "style": {"color": "white", "backgroundColor": "#121326"}})
+        layer = list(create_layers(info_dict))
+        if data_option == "Transaction":
+            r = pdk.Deck(
+            initial_view_state=initial_view_state,
+            layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>All Transactions</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Count}</b> 
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Total Payment Value</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Amount}</b> 
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Avg. Transactions Value</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Avg}</b>""", 
+                                                        "style": {"color": "white", "backgroundColor": "#034424"}})
+            
+        elif data_option =="User":
+            r = pdk.Deck(
+            initial_view_state=initial_view_state,
+            layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Registered Users</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{registeredUsers}</b> 
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>App Opens</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{appOpens}</b> """, 
+                                                        "style": {"color": "white", "backgroundColor": "#034424"}})
+        else:
+            r = pdk.Deck(
+            initial_view_state=initial_view_state,
+            layers=layer, map_provider=None, tooltip={"html": """<p style= 'margin: 0; line-height: 1;'>{state}</p> 
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{ST_NM}</b>
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Insurance Policies(Nos.)</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Count}</b> 
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Total Premium Value</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Amount}</b> 
+                                                    <p style= 'margin: 0; line-height: 1; color:white;'>Avg. Premium Value</p>
+                                                    <b style='color:#b069ff; margin: 0;line-height: 3;'>{Avg}</b>""", 
+                                                        "style": {"color": "white", "backgroundColor": "#034424"}})
 
-            with map_column:
-                if recenter_button:
-                    r.initial_view_state = initial_view_state
-                with st.spinner("Loading the Map"):
-                    c = st.pydeck_chart(r)
-            return None
+        if recenter_button:
+            r.initial_view_state = initial_view_state
+        with st.spinner("Loading the Map"):
+            c = st.pydeck_chart(r)
+            
+
+
+        return None
         
     
 
 
-        
+## UI fortop chart
+def load_top_chart_page():
+    pass
 
 
 def load_main_page():
@@ -448,9 +415,10 @@ def load_main_page():
         load_data_visualization_page()
         pass
     elif select == "TOP CHARTS":
+        load_top_chart_page()
         pass
 
 
 
-st.set_page_config(layout="wide", page_title="Phonepe Data Visuvalization")
+st.set_page_config(layout="wide", page_title="Phonepe Data Visuvalization", )
 load_main_page()

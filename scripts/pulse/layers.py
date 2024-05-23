@@ -35,7 +35,7 @@ def update_map(info_dict):
     return updated_map
 
 def update_hexa_data(state):
-    hexagon_data = pd.read_csv("pincode_coordinates.csv")
+    hexagon_data = pd.read_csv("geo_map/pincode_coordinates.csv")
     updated_hexa_data = hexagon_data[hexagon_data.state == state]
     return updated_hexa_data
 
@@ -53,7 +53,7 @@ def create_layers(info_dict):
         geolayer = pdk.Layer(
             'GeoJsonLayer',
             data=state_map,
-            get_fill_color=[58,60,94],  
+            get_fill_color=[3,68,36],  
             get_line_color=[255, 255, 255],   
             lineWidthMinPixels=0.6,
             filled=True,
@@ -61,7 +61,7 @@ def create_layers(info_dict):
             interactive=True, 
             pickable=True,
             auto_highlight=True,
-            highlight_color=[111,54,173],  
+            highlight_color=[135,208,171],  
             update_triggers={"get_fill_color": "highlighted"},  
             order=1,
         )
@@ -94,7 +94,7 @@ def create_layers(info_dict):
         geolayer = pdk.Layer(
             'GeoJsonLayer',
             data=updated_map,
-            get_fill_color=[58,60,94],  
+            get_fill_color=[3,68,36],  
             get_line_color=[255, 255, 255],   
             lineWidthMinPixels=0.6,
             filled=True,
@@ -102,7 +102,7 @@ def create_layers(info_dict):
             interactive=True, 
             pickable=True,
             auto_highlight=True,
-            highlight_color=[111,54,173],  
+            highlight_color=[135,208,171],  
             update_triggers={"get_fill_color": "highlighted"},  
             order=1,
         )
