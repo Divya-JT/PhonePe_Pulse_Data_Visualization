@@ -395,9 +395,314 @@ def load_data_visualization_page():
     
 
 
-## UI fortop chart
+## UI for top chart
+
+
+def top_transaction(data):
+    Year = data["year"]
+    Quarter = data["quater"]
+    st.markdown("### :violet[State]")
+
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_tranaction_state(Year,Quarter)
+            
+            fig = px.pie(df, values='Total_Amount',
+                                names='States',
+                                title='Top 10 Transaction Amount',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+        with col2:
+
+            df = search_tranaction_state1(Year,Quarter)
+            fig = px.pie(df, values='Transactions_Count',
+                                names='States',
+                                title='Top 10 Transactions',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+    
+    st.markdown("### :violet[District]")
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_tranaction_district(Year,Quarter)
+            fig = px.pie(df, values='Total_Amount',
+                                names='Districts',
+                                title='Top 10 Transaction Amount',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+        with col2:
+            df = search_tranaction_district1(Year,Quarter)
+            fig = px.pie(df, values='Transactions_Count',
+                                names='Districts',
+                                title='Top 10 Transactions',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+            
+    
+    st.markdown("### :violet[Pincode]")
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_tranaction_pincode(Year,Quarter)
+            
+            fig = px.pie(df, values='Total_Amount',
+                                names='Pincodes',
+                                title='Top 10 Transaction Amount',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+
+        with col2:
+            df = search_tranaction_pincode1(Year,Quarter)
+        
+            fig = px.pie(df, values='Transactions_Count',
+                                names='Pincodes',
+                                title='Top 10 Transactions',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+
+    return None
+
+    
+def top_insurance(data):
+    Year = data["year"]
+    Quarter = data["quater"]
+    
+    st.markdown("### :violet[State]")
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_insurance_state(Year,Quarter)
+
+            fig = px.pie(df, values='Total_Amount',
+                                names='States',
+                                title='Top 10 Policy Amount',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+        with col2:
+            df = search_insurance_state1(Year,Quarter)
+            
+            fig = px.pie(df, values='Transactions_Count',
+                                names='State',
+                                title='Top 10 Policies Count',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+    st.markdown("### :violet[District]")
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_insurance_district(Year,Quarter)
+            fig = px.pie(df, values='Total_Amount',
+                                names='District',
+                                title='Top 10 Policy Amount',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+        with col2:
+            df = search_insurance_district1(Year,Quarter)
+            
+            fig = px.pie(df, values='Transactions_Count',
+                                names='District',
+                                title='Top 10 Policies Count',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+    st.markdown("### :violet[Pincode]")
+    with st.container(border=True):
+        col1,col2 = st.columns([1,1],gap="small")
+        with col1:
+            df = search_insurance_pincode(Year,Quarter)
+            
+            fig = px.pie(df, values='Total_Amount',
+                                names='Pincode',
+                                title='Top 10 Policy Amount',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Transactions_Count'],
+                                labels={'Transactions_Count':'Transactions_Count'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+        with col2:
+            df = search_insurance_pincode1(Year,Quarter)
+            fig = px.pie(df, values='Transactions_Count',
+                                names='Pincode',
+                                title='Top 10 Policies Count',
+                                color_discrete_sequence=px.colors.sequential.Plotly3,
+                                hover_data=['Total_Amount'],
+                                labels={'Total_Amount':'Total_Amount'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+
+    return None
+
+
+def  get_user_brand(Year, Quarter):
+    df = user_brand(Year,Quarter)
+    fig = px.bar(df,
+                    title='Top 10',
+                    x="Total_Users",
+                    y="Brand",
+                    orientation='h',
+                    color='Avg_Percentage',
+                    color_continuous_scale=px.colors.sequential.Agsunset)
+    st.plotly_chart(fig,use_container_width=True)   
+    return None
+
+
+def top_users(data):
+    Year = data["year"]
+    Quarter = data["quater"]
+    col1,col2 = st.columns(2, gap="large")
+    col3,col4 = st.columns(2, gap="large")
+    
+    with col1:
+        with st.container(border=True):
+            st.markdown("### :violet[Brands]")
+
+            if Year in [2022,2023] and Quarter in [1,2,3,4]:
+                if not(Year == 2022 and Quarter == 1):
+                    st.markdown("#### Sorry No Data to Display")
+                else:
+                    get_user_brand(Year, Quarter)
+            else:
+                get_user_brand(Year, Quarter)
+
+    with col2:
+        with st.container(border=True):
+            st.markdown("### :violet[District]")
+            df = user_district(Year,Quarter)
+            
+            df.Total_Users = df.Total_Users.astype(float)
+            fig = px.bar(df,
+                            title='Top 10',
+                            x="Total_Users",
+                            y="District",
+                            orientation='h',
+                            color='Total_Users',
+                            color_continuous_scale=px.colors.sequential.Agsunset)
+            st.plotly_chart(fig,use_container_width=True)
+
+    with col3:
+        with st.container(border=True):             
+            st.markdown("### :violet[Pincode]")
+            df = user_pincode(Year,Quarter)
+            fig = px.pie(df,
+                            values='Total_Users',
+                            names='Pincode',
+                            title='Top 10',
+                            color_discrete_sequence=px.colors.sequential.Agsunset,
+                            hover_data=['Total_Users'])
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+            
+    with col4:
+        with st.container(border=True):             
+            st.markdown("### :violet[State]")
+            df = user_state(Year,Quarter)
+            
+            fig = px.pie(df, values='Total_Users',
+                                names='State',
+                                title='Top 10',
+                                color_discrete_sequence=px.colors.sequential.Agsunset,
+                                hover_data=['Total_Appopens'],
+                                labels={'Total_Appopens':'Total_Appopens'})
+
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig,use_container_width=True)
+        
+    return None
+
+
+
+
 def load_top_chart_page():
-    pass
+    with st.container(border=True):
+        st.write("")
+        space1,tpye_col, year_col, quater_col, space2 = st.columns([2,4,4,4,2], gap="large")
+        with tpye_col:
+            Type = st.selectbox("**Type**", ("Transactions", "Users", "Insurance"))
+            if Type == "Insurance":
+                year_min = 2020
+            else:
+                year_min = 2018
+        with year_col:
+            Year = st.slider("**Year**", min_value=year_min, max_value=2023)
+            if (Type == "Insurance") & (Year == 2020):
+                quater_min = 2
+            else:
+                quater_min = 1
+        with quater_col:
+            Quarter = st.slider("**Quarter**", min_value=quater_min, max_value=4)
+        
+        st.write("")
+
+    data = {"type":Type, "year":Year, "quater":Quarter}
+
+    
+    # get top transactions types
+    if Type == "Transactions":
+        top_transaction(data)
+
+    if Type == "Insurance":
+        top_insurance(data)
+        pass
+
+    if Type == "Users":
+        top_users(data)
+
+    return None
+
+
+
 
 
 def load_main_page():
@@ -414,7 +719,7 @@ def load_main_page():
     elif select == "DATA VISUALIZATION":
         load_data_visualization_page()
         pass
-    elif select == "TOP CHARTS":
+    elif select == "TOP CHART":
         load_top_chart_page()
         pass
 

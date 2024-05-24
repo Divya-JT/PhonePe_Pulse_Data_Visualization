@@ -21,7 +21,11 @@ def add_hexa_value(hexagondata, info_dict):
         top10_state = top10_state.set_index('name')['Count'].to_dict()
         top10_pincode = top10_pincode.set_index('name')['Count'].to_dict()
     min_value = random.choice(min_values)
-    hexagondata['val'] = np.random.randint(min_value, max_value + 1, len(hexagondata["postal code"]))
+    if(min_value < max_value + 1):
+        hexagondata['val'] = np.random.randint(min_value, max_value + 1, len(hexagondata["postal code"]))
+    else:
+        hexagondata['val'] = np.random.randint(max_value + 1, min_value, len(hexagondata["postal code"]))
+
     for district in list(top10_state.keys()):
         min_value = random.choice(min_values)
         hexagondata_d =  hexagondata[hexagondata.province_or_county == district]
