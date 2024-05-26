@@ -42,17 +42,21 @@ To run this project, follow these steps:
 
 1. Data Exploration Screen
 This screen will give the ovearall view of the PhonePe Pulse Data using plotly graphs.
-![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/9c7ae285-ed9d-43fd-8eed-90b9ebd19afb)
+![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/5aeac332-ec4c-443e-995e-6eb625ed1495)
+
 
 2. Data Visualization Screen
 In data visualization we can get some basic insights through india map(3D).
-![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/a1ab58bb-97c8-44e0-9aeb-a0e7a04ca299)
+![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/177e4b06-5e17-42a3-8a3c-900232c5262d)
+
 
 3. Top Chart Screen
 This screen will give visual representation of the Top 10 States, Districts, Pincodes & mobile models based on Transaction type, year and Quarter in an interactive way.
-![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/ff265333-468b-493c-80d4-c9a30054bb1a)
-![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/251ebe0a-0a66-4fdb-94e2-d430b47b23bd)
+![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/59042947-402c-46fb-a9ba-0565ad9e5830)
+![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/f2c0a3df-1587-443d-94ed-f97a77a1ff9e)
+
 
 4. Data Analysis Screen
 In this screen analyses the data with 10 queies and provides result in a tabuler and chart form for better understanding.
-![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/e9855e72-607b-4e59-bb5b-bc64d6f47dbd)
+![image](https://github.com/Divya-JT/PhonePe_Pulse_Data_Visualization/assets/168666654/6d6f67de-1825-4733-a6b2-3aad63ba47f6)
+
