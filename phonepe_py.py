@@ -783,9 +783,24 @@ def load_data_analysis_page():
             
 
         try:    
-            result = get_dataframe_from_db(query)
-            pd.DataFrame(result)
-            st.write(result)
+            col1, col2 = st.columns([1,1])
+
+            with col1:
+                result = get_dataframe_from_db(query)
+
+                pd.DataFrame(result)
+                st.write(result)
+            with col2:
+                result = get_dataframe_from_db(query)
+
+                fig = px.bar(data_frame= result,
+                            title=options[index],
+                            x="states",
+                            y = ["Total_Transactions_Count", "Total"],
+                            color='states',
+                            color_continuous_scale=px.colors.sequential.Agsunset)
+                st.plotly_chart(fig,use_container_width=True)
+
         except Exception as error:
             print("Query Error:", error)
 
