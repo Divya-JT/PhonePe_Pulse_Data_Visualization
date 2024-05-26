@@ -182,12 +182,32 @@ def detail_info_col(info_dict):
 
 ## UI for home screen
 def load_home_page():
-    #st.title ("PHONEPE DATA VISUALIZATION AND EXPLORATION")
-    st.subheader("PHONEPE DATA VISUALIZATION AND EXPLORATION")
-    #st.markdown("**PHONEPE DATA VISUALIZATION AND EXPLORATION**")
+    st.title("PHONEPE DATA VISUALIZATION AND EXPLORATION")
 
-    if st.button(label="Insert PhonePe Pulse Data into DB", type="primary"):
-        insert_data_from_file_to_sql("D:\Python_Proj\PhonePe_Data\pulse\data")
+    st.write("---")
+
+    space1, col1, col2, space2 = st.columns([0.5, 2, 2, 0.5])
+    with col1:
+        st.image("geo_map/phonepe.png", width=350)
+    with col2:
+        with st.spinner(text='Inserting PhonePe Pulse Datadata into SQL...'):
+            if(check_data_available_in_sql() == "0"):
+                insert_data_from_file_to_sql("pulse\data")
+                phonepe_deatils= """ The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms them, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries."""
+                st.subheader(phonepe_deatils)
+            else:
+                phonepe_deatils= """ The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms them, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries."""
+                st.subheader(phonepe_deatils)
+    
+
+
+
+        
+    
+    
+
+        
+
 
 
 ## UI for Data Exploration

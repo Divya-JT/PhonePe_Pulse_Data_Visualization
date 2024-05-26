@@ -3,21 +3,61 @@ import os
 import json
 import pandas as pd 
 import mysql.connector
-import numpy as np
-import plotly.express as px
+#import numpy as np
+#import plotly.express as px
 
+
+
+def change_data_insertion_status(status):
+    #try:
+        client = getSqlClient_1()
+        cursor = client.cursor()
+
+        cursor.execute("DELETE FROM data_insertion_status;")
+        client.commit()
+        
+        query = """INSERT INTO data_insertion_status (sno, status) VALUES(%s,%s)"""
+        values = ("1", 
+                  status)
+        cursor.execute(query, values)
+        client.commit()
+        client.close()
+
+    #except Exception as err:
+        #print("change_data_insertion_status => Error : ", err)
+
+
+def check_data_available_in_sql():
+    status = "0"
+    try:
+        client = getSqlClient_1()
+        cursor = client.cursor()
+        
+        cursor.execute("SELECT status FROM data_insertion_status;")
+
+        myresult = cursor.fetchall()
+        for result in myresult:
+            status = result
+
+        client.close()            
+    except Exception as err:
+        print("check_data_available_in_sql => Error : ", err)
+        
+
+    return status
 
 # STORING THE DATAFRAME IN TO MSQL DATABASE
 def create_database():
-        db_client = mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = "4444")
-        cursor = db_client.cursor()
-        
-        # TO CREATE A DATABASE    
-        query = "CREATE DATABASE IF NOT EXISTS Phonepe_data"      
-        cursor.execute(query)
+    db_client = mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "4444")
+    cursor = db_client.cursor()
+    
+    # TO CREATE A DATABASE    
+    query = "CREATE DATABASE IF NOT EXISTS Phonepe_data"      
+    cursor.execute(query)
+
     
 
 # Sql Client with exist DB
@@ -75,6 +115,10 @@ def create_database_and_table():
     query = """create table IF NOT EXISTS top_user_list(states varchar(255), year int, quarter int, pincodes int, registeredUsers bigint)"""
     cursor.execute(query)
 
+    # Create "top_user_list" table
+    query = """create table IF NOT EXISTS data_insertion_status(sno varchar(2), status varchar(2))"""
+    cursor.execute(query)
+
     client.close()
 
 
@@ -86,10 +130,11 @@ def remove_phonepe_database():
         cursor = client.cursor()
         # delete database
         cursor.execute("DROP DATABASE IF EXISTS Phonepe_data;")
+        client.close()
+
     except Exception as err:
         print(err)
 
-    client.close()
     
     pass
 
@@ -97,34 +142,41 @@ def remove_phonepe_database():
 
 # file_path => D:/Python_Proj/PhonePe/pulse/data
 def insert_data_from_file_to_sql(file_path):
+    try:
+        # Remove the exist data
+        remove_phonepe_database()
+        # Create database
+        create_database()
+        create_database_and_table()
 
-    # Remove the exist data
-    remove_phonepe_database()
-    # Create database
-    create_database()
-    create_database_and_table()
+        # AGGRECATED INSURANCE
+        fetch_and_insert_aggregated_insurance(file_path)
+        # AGGREGATED TRANSACTION
+        fetch_and_insert_agregated_transaction(file_path)
+        #AGGREGATED USER
+        fetch_and_insert_agregated_user(file_path)
 
-    # AGGRECATED INSURANCE
-    fetch_and_insert_aggregated_insurance(file_path)
-    # AGGREGATED TRANSACTION
-    fetch_and_insert_agregated_transaction(file_path)
-    #AGGREGATED USER
-    fetch_and_insert_agregated_user(file_path)
+        # MAP INSURANCE
+        fetch_and_insert_map_insurance(file_path)
+        # MAP TRANSACTION
+        fetch_and_insert_map_transaction(file_path)
+        # MSP USER
+        fetch_and_insert_map_user(file_path)
 
-    # MAP INSURANCE
-    fetch_and_insert_map_insurance(file_path)
-    # MAP TRANSACTION
-    fetch_and_insert_map_transaction(file_path)
-    # MSP USER
-    fetch_and_insert_map_user(file_path)
+        # TOP INSURANCE
+        fetch_and_insert_top_insurance(file_path)
+        #TOP TRANSACTION
+        fetch_and_insert_top_transaction(file_path)
+        # TOP USER
+        fetch_and_insert_top_user(file_path)
 
-    # TOP INSURANCE
-    fetch_and_insert_top_insurance(file_path)
-    #TOP TRANSACTION
-    fetch_and_insert_top_transaction(file_path)
-    # TOP USER
-    fetch_and_insert_top_user(file_path)
-    
+        
+        # change status
+        change_data_insertion_status("1")
+
+    except Exception as err:
+        print("insert_data_from_file_to_sql => Error:", err)
+
     pass
 
 # AGGRECATED INSURANCE
@@ -177,10 +229,11 @@ def fetch_and_insert_aggregated_insurance(file_path):
         data = agg_insu_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
+        client.close()
+
     except Exception as err:
         print("fetch_and_insert_aggregated_insurance = Error : ", err)
 
-    client.close()
 pass # 
 
 
@@ -235,10 +288,11 @@ def fetch_and_insert_agregated_transaction(file_path):
         data = agg_tran_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
+        client.close()
     except Exception as err:
         print("fetch_and_insert_agregated_transaction => Error : ", err)
 
-    client.close()
+    
 pass
 
 
@@ -298,11 +352,11 @@ def fetch_and_insert_agregated_user(file_path):
         data = agg_user_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
     except Exception as err:
         print("fetch_and_insert_agregated_user => Error : ", err)
 
-    client.close()
+    
 pass 
 
 # MAP INSURANCE
@@ -356,11 +410,11 @@ def fetch_and_insert_map_insurance(file_path):
         data =map_insu_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
     except Exception as err:
         print("fetch_and_insert_map_insurance => Error : ", err)
 
-    client.close()
+    
 pass
 
 # MAP TRANSACTION
@@ -414,12 +468,12 @@ def fetch_and_insert_map_transaction(file_path):
         data = map_tran_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
 
     except Exception as err:
         print("fetch_and_insert_map_transaction => Error : ", err)
 
-    client.close()
+    
 pass
 
 
@@ -475,11 +529,12 @@ def fetch_and_insert_map_user(file_path):
         data = map_user_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
+        client.close()
 
     except Exception as err:
         print("fetch_and_insert_map_user => Error : ", err)
 
-    client.close()
+    
 pass
 
 
@@ -538,11 +593,11 @@ def fetch_and_insert_top_insurance(file_path):
         data = top_insu_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
     except Exception as err:
         print("fetch_and_insert_top_insurance => Error : ", err)
 
-    client.close()
+    
 pass
 
 
@@ -598,11 +653,11 @@ def fetch_and_insert_top_transaction(file_path):
         data = top_tran_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
     except Exception as err:
         print("fetch_and_insert_top_transaction => Error : ", err)
 
-    client.close()
+    
 pass
 
 
@@ -658,10 +713,10 @@ def fetch_and_insert_top_user(file_path):
         data = top_user_list.values.tolist()
         cursor.executemany(query,data)
         client.commit()
-
+        client.close()
+        
     except Exception as err:
         print("fetch_and_insert_top_user => Error : ", err)
 
-    client.close()
+    
 pass
-
