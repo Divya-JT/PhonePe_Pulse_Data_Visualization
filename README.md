@@ -9,7 +9,7 @@ Libraries and tools are used in this project:
   4. Streamlit - Frontend development
   5. Plotly - to visualize the pulse data in an interactive way
   6. Pydeck - to create interactive 3D mapping and geospatial visualization
-  7. Geo pandas - to make working with geospatial data
+  7. Geo pandas - to work with geospatial data
 
 ## Installation
 
