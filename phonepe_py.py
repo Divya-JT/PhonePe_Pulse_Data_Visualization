@@ -1,5 +1,5 @@
 import streamlit as st
-import argparse
+#import argparse
 import os
 from streamlit_option_menu import option_menu
 from streamlit_extras.stylable_container import stylable_container
@@ -22,6 +22,9 @@ pie_chart = "pie"
 heat_map = "heat_map"
 histogram_chart = "histogram"
 bar_plotter = "bar_plotter"
+sun_burn_chart = "sun_burn"
+violin_chart = "violin_chart"
+
 
 def detail_col_1():
     state_map = gpd.read_file("geo_map/indian_states.geojson")
@@ -57,134 +60,6 @@ def detail_col_1():
 
 
 
-def detail_col_3(load_map, data_option):
-    if load_map == "All-India":
-        state_b, district_b, pincode_b = st.columns([5,5,5])
-        
-        with state_b:
-            with stylable_container(key="statebutton",
-                                    css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
-                state_button = st.button("State")
-        with district_b:
-            with stylable_container(key="districtbutton",
-                                    css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
-                district_button = st.button("District")
-        with pincode_b:
-            with stylable_container(key="pincodebutton",
-                                    css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
-                pincode_button = st.button("Pincode")
-    else:
-        district_b, pincode_b = st.columns([5,5], gap="small")
-        
-        with district_b:
-            with stylable_container(key="districtbutton",
-                                    css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
-                district_button = st.button("District")
-        with pincode_b:
-            with stylable_container(key="pincodebutton",
-                                    css_styles="""button {background-color:#121326; border-radius: 18px;}"""):
-                pincode_button = st.button("Pincode")
-
-
-    top_data = "District"
-    if district_button:
-        top_data ="District"
-    if pincode_button:
-        top_data = "Pincode"
-    if load_map == "All-India":
-        top_data = "State"
-        if district_button:
-            top_data ="District"
-        if pincode_button:
-            top_data = "Pincode"
-        if state_button:
-            top_data = "State"
-    return top_data
-
-def detail_info_col(info_dict):
-    data = aggregated_data(info_dict)
-    data_option = info_dict["data_option"]
-    if data_option == "Transaction":
-        #st.write("All PhonePe transactions (UPI + Cards + Wallets)")
-        total_count = data["Count"].sum()
-        total_payement = data["Amount"].sum()
-        avg_amount = total_payement/total_count
-        total_count = '{:,.2f}'.format(total_count)
-        total_payement = '{:,.2f}'.format(total_payement)
-        total_payement = '₹'+str(total_payement)
-        avg_amount = '{:,.2f}'.format(avg_amount)
-        avg_amount = '₹'+str(avg_amount)
-        st.markdown(f"""<p style='margin: 0;'>All PhonePe transactions (UPI + Cards + Wallets)</p>
-                    <h2 style='color:#b069ff; margin: 0;'>{total_count}</h2>
-                    <p style='margin: 0;'>Total payment value</p>
-                    <h3 style='color:#b069ff; margin: 0;'>{total_payement}</h3>
-                    <p style='margin: 0;'>Avg. transaction value</p>
-                    <h2 style='color:#b069ff; margin: 0;'>{avg_amount}</h2>
-                    """, unsafe_allow_html=True)
-        
-    elif data_option == "User":
-        if isinstance(data, dict):
-            reg_user = data["registeredUsers"]
-            app_opens = data["appOpens"]
-        else:
-            reg_user =  data["registeredUsers"]
-            app_opens = data["appOpens"]
-            reg_user = reg_user.drop_duplicates()[0]
-            app_opens = app_opens.drop_duplicates()[0]
-        
-        reg_user = '{:,.2f}'.format(reg_user)
-        app_opens = '{:,.2f}'.format(app_opens)
-        #st.write(type(app_opens))
-        if app_opens == "0.00":
-            app_opens = "Unavailable"
-        quater = info_dict["quater"]
-        year = info_dict["year"]
-        st.markdown(f"""<p style='margin: 0;'>Registered PhonePe users till {quater} {year}</p>
-                    <h2 style='color:#b069ff; margin: 0;'>{reg_user}</h2>
-                    <p style='margin: 0;'>PhonePe app opens in {quater} {year}</p>
-                    <h3 style='color:#b069ff; margin: 0;'>{app_opens}</h3>
-                    """, unsafe_allow_html=True)
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-    
-    else:
-        ins_purchased = data["paymentInstruments"][0]["count"]
-        ins_amount = data["paymentInstruments"][0]["amount"]
-        avg_amount = ins_amount/ins_purchased
-        ins_purchased = '{:,.2f}'.format(ins_purchased)
-        ins_amount = '{:,.2f}'.format(ins_amount)
-        ins_amount = '₹'+str(ins_amount)
-        avg_amount = '{:,.2f}'.format(avg_amount)
-        avg_amount = '₹'+str(avg_amount)
-        load_map = info_dict["data_option"]
-        st.markdown(f"""<p style='margin: 0;'>{load_map} Insurance Policies Purchased (Nos.)</p>
-                    <h2 style='color:#b069ff; margin: 0;'>{ins_purchased}</h2>
-                    <p style='margin: 0;'>Total premium value</p>
-                    <h3 style='color:#b069ff; margin: 0;'>{ins_amount}</h3>
-                    <p style='margin: 0;'>Average premium value</p>
-                    <h2 style='color:#b069ff; margin: 0;'>{avg_amount}</h2>
-                    """, unsafe_allow_html=True)
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    st.write("")
-    return None
 
 
 ## UI for home screen
@@ -197,7 +72,7 @@ def load_home_page():
     with col1:
         st.image("geo_map/phonepe.png", width=350)
     with col2:
-        with st.spinner(text='Inserting PhonePe Pulse Datadata into SQL...'):
+        with st.spinner(text='Inserting PhonePe Pulse Data into SQL...'):
             if(check_data_available_in_sql() == "0"):
                 insert_data_from_file_to_sql("pulse\data")
                 phonepe_deatils= """ The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms them, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries."""
@@ -206,14 +81,6 @@ def load_home_page():
                 phonepe_deatils= """ The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms them, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries."""
                 st.subheader(phonepe_deatils)
     
-
-
-
-        
-    
-    
-
-        
 
 
 
@@ -352,7 +219,7 @@ def load_data_exploration_page():
             if year:
                 if st.button("Show Graph", key= "show_graph_5", type= "primary"):
                     with st.container(border = True):
-                        fig_count = px.bar(top_user_list, x = "pincodes", y = "registeredUsers", title = f"{year} REGISTERED USER", color_discrete_sequence = px.colors.sequential.Bluered_r)
+                        fig_count = px.bar(top_user_list, x = "states", y = "registeredUsers", title = f"{year} REGISTERED USER", color_discrete_sequence = px.colors.sequential.Bluered_r)
                         st.plotly_chart(fig_count, use_container_width=True)
                         
 
@@ -837,9 +704,10 @@ def load_data_analysis_page():
                     as Total from  agg_tran_list group 
                     by states order by Total desc limit 1"""
                 
-                names = "states"
-                values = ["Total_Transactions_Count", "Total"]
-                map_type = bar_chart
+                values = "states"
+                names = "Total"
+                map_type = "violin_chart"
+               
 
             elif (index == 10): #which state contributed lowest revenue rate by transactions?
                 query = """select districts,states, sum(transaction_count) as Total_Transactions_Count, sum(amount) 
@@ -884,6 +752,12 @@ def show_data_analysis_result(query, title, names, values, map_type):
             
             elif(map_type == bar_plotter):
                 fig = px.bar_polar(data_frame=result, r = names, theta=values)
+            elif(map_type == sun_burn_chart):
+                fig = px.sunburst(data_frame= result, names= names, values=values)
+            elif(map_type == violin_chart):
+                fig = px.violin(data_frame=result, x = names, y = values)
+            
+            
         
 
             st.plotly_chart(fig,use_container_width=True)

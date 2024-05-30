@@ -9,7 +9,7 @@ import mysql.connector
 
 
 def change_data_insertion_status(status):
-    #try:
+    try:
         client = getSqlClient_1()
         cursor = client.cursor()
 
@@ -23,8 +23,8 @@ def change_data_insertion_status(status):
         client.commit()
         client.close()
 
-    #except Exception as err:
-        #print("change_data_insertion_status => Error : ", err)
+    except Exception as err:
+        print("change_data_insertion_status => Error : ", err)
 
 
 def check_data_available_in_sql():
@@ -714,7 +714,7 @@ def fetch_and_insert_top_user(file_path):
         cursor.executemany(query,data)
         client.commit()
         client.close()
-        
+
     except Exception as err:
         print("fetch_and_insert_top_user => Error : ", err)
 

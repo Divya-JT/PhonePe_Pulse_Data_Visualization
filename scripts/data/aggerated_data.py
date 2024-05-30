@@ -17,14 +17,14 @@ def aggregated_data(data):
         path = f"pulse/data/aggregated/{data_option}/country/india/state/{state}/{data['year']}/{quater}.json"
     
     if data_option == "transaction":
-        return tranction_data(path)
+        return transaction_data(path)
     elif data_option == "user":
         return user_data(path)
     else:
-        return incurance_data(path)
+        return insurance_data(path)
 
 
-def tranction_data(path):
+def transaction_data(path):
     agg_data = open(path)
     agg_data = json.load(agg_data)
     agg_data = agg_data['data']["transactionData"]
@@ -58,7 +58,7 @@ def user_data(path):
     agg_data = pd.DataFrame(rows)
     return agg_data
 
-def incurance_data(path):
+def insurance_data(path):
     agg_data = open(path)
     agg_data = json.load(agg_data)
     agg_data = agg_data['data']["transactionData"][0]
